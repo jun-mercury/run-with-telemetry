@@ -46,6 +46,7 @@ type InputParams struct {
 	StepName                string
 	JobName                 string
 	JobAsParent             string
+	EmitStepSummary         string
 	StderrAsInfo            string
 }
 
@@ -414,6 +415,7 @@ func parseInputParams() InputParams {
 		StepName:                githubactions.GetInput("step-name"),
 		JobName:                 githubactions.GetInput("job-name"),
 		JobAsParent:             githubactions.GetInput("job-as-parent"),
+		EmitStepSummary:         githubactions.GetInput("emit-step-summary"),
 		StderrAsInfo:            githubactions.GetInput("stderr-as-info"),
 	}
 }
@@ -569,7 +571,9 @@ func main() {
 	tracer := otel.Tracer(actionName)
 
 	defer func() {
-		emitStepSummary(params, traceID, parentSpandID, success)
+		if strings.ToLower(params.EmitStepSummary) == "true" {
+			emitStepSummary(params, traceID, parentSpandID, success)
+		}
 		shutdown()
 		if exitCode != 0 {
 			os.Exit(exitCode)
