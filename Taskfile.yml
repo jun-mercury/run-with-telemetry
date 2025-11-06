@@ -255,4 +255,4 @@ tasks:
   release:
     cmds:
       - task: default
-      - ghr -u jun-mercury -t $GITHUB_TOKEN -replace -recreate -name "Bump {{.BUILD_VERSION}}" --debug {{.BUILD_VERSION}} dist
+      - ghr -u $USER -t $GITHUB_TOKEN -replace -recreate -name "Bump {{.BUILD_VERSION}}" --debug {{.BUILD_VERSION}} dist
