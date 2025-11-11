@@ -20,7 +20,9 @@ tasks:
         GOOS={{.GOOS}} GOARCH={{.GOARCH}} GOARM={{.GOARM}} GOMIPS={{.GOMIPS}} GOAMD64={{.GOAMD64}} \
         go build -o bin/run-with-telemetry-{{.TASK}} -ldflags \
         "-w -s -X 'main.BUILD_VERSION={{.BUILD_VERSION}}' -X 'main.BUILD_DATE={{.BUILD_DATE}}' -X 'main.COMMIT_ID={{.COMMIT_ID}}'" cmd/run-with-telemetry/main.go
-        upx --best --lzma bin/run-with-telemetry-{{.TASK}} --force-macos
+        if [ "{{.GOOS}}" != "darwin" ]; then
+          upx --best --lzma "bin/run-with-telemetry-{{.TASK}}"
+        fi
   linux-386:
     cmds:
       - task: build-tpl
@@ -255,4 +257,4 @@ tasks:
   release:
     cmds:
       - task: default
-      - ghr -u $USER -t $GITHUB_TOKEN -replace -recreate -name "Bump {{.BUILD_VERSION}}" --debug {{.BUILD_VERSION}} dist
+      - ghr -u MercuryTechnologies -t $GITHUB_TOKEN -replace -recreate -name "Bump {{.BUILD_VERSION}}" --debug {{.BUILD_VERSION}} dist
